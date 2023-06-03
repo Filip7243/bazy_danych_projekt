@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bookmachine.HomeController">
+    <children>
+        <VBox fx:id="vBox" alignment="TOP_CENTER" prefHeight="1000.0" prefWidth="1000.0" spacing="10.0">
+            <children>
+                <Button fx:id="profileBtn" mnemonicParsing="false" text="PROFILE" />
+                <TableView fx:id="borrowings" prefHeight="200.0" prefWidth="934.0">
+                    <columns>
+                        <TableColumn fx:id="borTitleCol" prefWidth="96.0" text="TITLE" />
+                        <TableColumn fx:id="borYearCol" prefWidth="88.0" text="PUBLISH YEAR" />
+                        <TableColumn fx:id="borAuthorCol" prefWidth="68.0" text="AUTHOR" />
+                        <TableColumn fx:id="borPublisherCol" prefWidth="101.0" text="PUBLISHER" />
+                        <TableColumn fx:id="borGenreCol" prefWidth="97.0" text="GENRE" />
+                        <TableColumn fx:id="borCoverCol" prefWidth="113.0" text="COVER" />
+                        <TableColumn fx:id="borBorrowCol" prefWidth="111.0" text="BORROW" />
+                    </columns>
+                </TableView>
+            <TableView fx:id="reservations" prefHeight="200.0" prefWidth="934.0">
+               <columns>
+                  <TableColumn fx:id="resTitleCol" prefWidth="96.0" text="TITLE" />
+                  <TableColumn fx:id="resYearCol" prefWidth="88.0" text="PUBLISH YEAR" />
+                  <TableColumn fx:id="resAuthorCol" prefWidth="68.0" text="AUTHOR" />
+                  <TableColumn fx:id="resPublisherCol" prefWidth="101.0" text="PUBLISHER" />
+                  <TableColumn fx:id="resGenreCol" prefWidth="97.0" text="GENRE" />
+                  <TableColumn fx:id="resCoverCol" prefWidth="113.0" text="COVER" />
+                  <TableColumn fx:id="resReserveCol" text="RESERVE" />
+               </columns>
+            </TableView>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
