@@ -26,6 +26,8 @@ public class BookRepository {
         notReservedBooksQuery.registerStoredProcedureParameter(1, void.class, ParameterMode.REF_CURSOR);
         notReservedBooksQuery.execute();
 
-        return (List<Book>) notReservedBooksQuery.getResultList();
+        List<Book> resultList = notReservedBooksQuery.getResultList();
+        System.out.println(resultList);
+        return resultList;
     }
 }

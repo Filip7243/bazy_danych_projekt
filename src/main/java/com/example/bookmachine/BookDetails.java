@@ -3,6 +3,8 @@ package com.example.bookmachine;
 import java.util.Date;
 
 public class BookDetails {
+
+    private Long id;
     private String title;
     private Date date;
     private String authorName;
@@ -10,13 +12,23 @@ public class BookDetails {
     private String genre;
     private String cover;
 
-    public BookDetails(String title, Date date, String authorName, String publisherName, String genre, String cover) {
+    public BookDetails(Long id, String title, Date date, String authorName,
+                       String publisherName, String genre, String cover) {
+        this.id = id;
         this.title = title;
         this.date = date;
         this.authorName = authorName;
         this.publisherName = publisherName;
         this.genre = genre;
         this.cover = cover;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {

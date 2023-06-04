@@ -4,19 +4,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.bookmachine.BookRepository.getAllNotBorrowedBooks;
 import static com.example.bookmachine.BookRepository.getAllNotReservedBooks;
+import static com.example.bookmachine.BorrowingRepository.borrowBook;
+import static com.example.bookmachine.BorrowingRepository.reserveBook;
+import static com.example.bookmachine.HelloApplication.loggedInUser;
 import static com.example.bookmachine.LoginController.loadFXML;
+import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 public class HomeController {
 
@@ -113,8 +116,9 @@ public class HomeController {
                             author.getLastName()).toList();
                     String publisherName = book.getPublisher().getName();
                     String genreName = book.getGenre().getName();
+                    Long id = book.getId();
 
-                    return new BookDetails(book.getTitle(), book.getPublicationDate(),
+                    return new BookDetails(id, book.getTitle(), book.getPublicationDate(),
                             authorsNames.toString(), publisherName, genreName, book.getCover());
                 }).toList();
     }
@@ -130,7 +134,43 @@ public class HomeController {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             BookDetails data = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedData: " + data);
+                            if (btnCol == resReserveCol) {
+                                Alert a = new Alert(CONFIRMATION);
+                                a.setTitle("Reserve Book");
+                                a.setContentText("Do you want to reserve book: " + data.getTitle());
+
+                                Optional<ButtonType> result = a.showAndWait();
+                                if (result.isEmpty()) {
+                                    return;
+                                } else if (result.get() == ButtonType.OK) {
+                                    reserveBook(data.getId(), loggedInUser.getId());
+
+                                    Alert aInfo = new Alert(INFORMATION);
+                                    aInfo.setTitle("Book reserved!");
+                                    aInfo.setContentText("You have reserved book: " + data.getTitle());
+                                    aInfo.show();
+                                } else if (result.get() == ButtonType.CANCEL) {
+                                    return;
+                                }
+                            } else {
+                                Alert a = new Alert(CONFIRMATION);
+                                a.setTitle("Borrow Book");
+                                a.setContentText("Do you want to borrow book: " + data.getTitle());
+
+                                Optional<ButtonType> result = a.showAndWait();
+                                if (result.isEmpty()) {
+                                    return;
+                                } else if (result.get() == ButtonType.OK) {
+                                    borrowBook(data.getId(), loggedInUser.getId());
+                                    Alert aInfo = new Alert(INFORMATION);
+                                    aInfo.setTitle("Book borrowed!");
+                                    aInfo.setContentText("You have borrowed book: " + data.getTitle());
+                                    aInfo.show();
+                                } else if (result.get() == ButtonType.CANCEL) {
+                                    return;
+                                }
+                            }
+
                         });
                     }
 

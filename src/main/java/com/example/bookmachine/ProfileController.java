@@ -4,15 +4,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import static com.example.bookmachine.BorrowingRepository.*;
+import static javafx.scene.control.Alert.AlertType.CONFIRMATION;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 public class ProfileController {
 
@@ -85,7 +87,23 @@ public class ProfileController {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             BorrowingDetails data = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedData: " + data);
+                            Alert a = new Alert(CONFIRMATION);
+                            a.setTitle("Return Book");
+                            a.setContentText("Do you want to return book: " + data.getTitle());
+
+                            Optional<ButtonType> result = a.showAndWait();
+                            if (result.isEmpty()) {
+                                System.out.println("WITAM WITAM");
+                            } else if (result.get() == ButtonType.OK) {
+                                returnBook(data.getBorrowId());
+
+                                Alert aInfo = new Alert(INFORMATION);
+                                aInfo.setTitle("Book returned!");
+                                aInfo.setContentText("You have returned book: " + data.getTitle());
+                                aInfo.show();
+                            } else if (result.get() == ButtonType.CANCEL) {
+                                System.out.println("CANCLE");
+                            }
                         });
                     }
 
@@ -95,7 +113,12 @@ public class ProfileController {
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(btn);
+                            BorrowingDetails data = getTableView().getItems().get(getIndex());
+                            if (data.getReturnDate() != null) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
                         }
                     }
                 };
@@ -117,7 +140,24 @@ public class ProfileController {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             ReservationDetails data = getTableView().getItems().get(getIndex());
-                            System.out.println("selectedData: " + data);
+
+                            Alert a = new Alert(CONFIRMATION);
+                            a.setTitle("Borrow Book");
+                            a.setContentText("Do you want to borrow book: " + data.getTitle());
+
+                            Optional<ButtonType> result = a.showAndWait();
+                            if (result.isEmpty()) {
+                                System.out.println("WITAM WITAM");
+                            } else if (result.get() == ButtonType.OK) {
+                                borrowReservedBook(data.getBookId(), data.getPersonId(), data.getReservationId());
+
+                                Alert aInfo = new Alert(INFORMATION);
+                                aInfo.setTitle("Book borrowed!");
+                                aInfo.setContentText("You have borrowed book: " + data.getTitle());
+                                aInfo.show();
+                            } else if (result.get() == ButtonType.CANCEL) {
+                                System.out.println("CANCLE");
+                            }
                         });
                     }
 
@@ -153,21 +193,26 @@ public class ProfileController {
     private List<BorrowingDetails> mapToBorrowingDetails(List<Borrowing> borrowings) {
         return borrowings.stream()
                 .map(borrow -> {
+                    Long bookId = borrow.getBook().getId();
+                    Long borrowId = borrow.getId();
                     String title = borrow.getBook().getTitle();
                     Date borrowDate = borrow.getBorrowDate();
                     Date returnDate = borrow.getReturnDate();  // returnDate will be displayed when user return books (record will not be deleted from table)
 
-                    return new BorrowingDetails(title, borrowDate, returnDate);
+                    return new BorrowingDetails(bookId, borrowId, title, borrowDate, returnDate);
                 }).toList();
     }
 
     private List<ReservationDetails> mapToReservationDetails(List<Reservation> borrowings) {
         return borrowings.stream()
                 .map(reservation -> {
+                    Long reservationId = reservation.getId();
                     String title = reservation.getBook().getTitle();
                     Date reservationDate = reservation.getReservationDate();
+                    Long bookId = reservation.getBook().getId();
+                    Long personId = reservation.getPerson().getId();
 
-                    return new ReservationDetails(title, reservationDate);
+                    return new ReservationDetails(reservationId, title, reservationDate, bookId, personId);
                 }).toList();
     }
 

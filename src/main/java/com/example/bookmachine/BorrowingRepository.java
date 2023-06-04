@@ -18,10 +18,7 @@ public class BorrowingRepository {
         personBorrowings.setParameter(1, loggedInUser.getId());
         personBorrowings.execute();
 
-        List resultList = personBorrowings.getResultList();
-        System.out.println(resultList);
-        System.out.println(loggedInUser.getId());
-        return resultList;
+        return personBorrowings.getResultList();
     }
 
     public static List<Reservation> getUsersReservation() {
@@ -33,5 +30,45 @@ public class BorrowingRepository {
         personReservations.execute();
 
         return personReservations.getResultList();
+    }
+
+    public static void borrowBook(Long bookId, Long personId) {
+        StoredProcedureQuery borrowBook = em
+                .createStoredProcedureQuery("borrow_book");
+        borrowBook.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
+        borrowBook.registerStoredProcedureParameter(2, Long.class, ParameterMode.IN);
+        borrowBook.setParameter(1, bookId);
+        borrowBook.setParameter(2, personId);
+        borrowBook.execute();
+    }
+
+    public static void reserveBook(Long bookId, Long personId) {
+        StoredProcedureQuery reserveBook = em
+                .createStoredProcedureQuery("reserve_book");
+        reserveBook.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
+        reserveBook.registerStoredProcedureParameter(2, Long.class, ParameterMode.IN);
+        reserveBook.setParameter(1, bookId);
+        reserveBook.setParameter(2, personId);
+        reserveBook.execute();
+    }
+
+    public static void returnBook(Long borrowingId) {
+        StoredProcedureQuery returnBook = em
+                .createStoredProcedureQuery("return_book");
+        returnBook.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
+        returnBook.setParameter(1, borrowingId);
+        returnBook.execute();
+    }
+
+    public static void borrowReservedBook(Long bookId, Long personId, Long reservationId) {
+        StoredProcedureQuery returnBook = em
+                .createStoredProcedureQuery("borrow_reserved_book");
+        returnBook.registerStoredProcedureParameter(1, Long.class, ParameterMode.IN);
+        returnBook.registerStoredProcedureParameter(2, Long.class, ParameterMode.IN);
+        returnBook.registerStoredProcedureParameter(3, Long.class, ParameterMode.IN);
+        returnBook.setParameter(1, bookId);
+        returnBook.setParameter(2, personId);
+        returnBook.setParameter(3, reservationId);
+        returnBook.execute();
     }
 }
